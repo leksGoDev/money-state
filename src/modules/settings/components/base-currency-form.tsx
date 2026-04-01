@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import type { Currency } from "@/domain/types/money";
+import { updateSettingsViaApi } from "@/modules/settings/requests";
 
 type BaseCurrencyFormProps = {
   value: Currency;
@@ -16,21 +17,7 @@ export function BaseCurrencyForm({ value }: BaseCurrencyFormProps) {
     setStatus("saving");
 
     try {
-      const response = await fetch("/api/settings", {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          baseCurrency: currency,
-        }),
-      });
-
-      if (!response.ok) {
-        setStatus("error");
-        return;
-      }
-
+      await updateSettingsViaApi(currency);
       setStatus("saved");
       window.location.reload();
     } catch {

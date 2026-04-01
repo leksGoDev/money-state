@@ -1,4 +1,4 @@
-import { notFound } from "@/lib/api/errors";
+import { notFound } from "@/lib/api/server/errors";
 import { mapExpenseRowsToDto } from "@/modules/expenses/mappers";
 import { findExpenseById } from "@/modules/expenses/repository";
 

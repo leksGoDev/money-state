@@ -1,6 +1,6 @@
 import bcrypt from "bcryptjs";
 
-import { conflict } from "@/lib/api/errors";
+import { conflict } from "@/lib/api/server/errors";
 import {
   attachCredentialsToUser,
   createCredentialsUser,

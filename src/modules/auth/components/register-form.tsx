@@ -2,36 +2,27 @@
 
 import { useState } from "react";
 
+import { registerViaApi } from "@/modules/auth/requests";
+
 export function RegisterForm() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   async function onSubmit(formData: FormData) {
-    setError(null);
     setLoading(true);
+    setError(null);
 
     try {
-      const response = await fetch("/api/auth/register", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          email: formData.get("email"),
-          password: formData.get("password"),
-          name: formData.get("name"),
-        }),
+      await registerViaApi({
+        email: formData.get("email"),
+        password: formData.get("password"),
+        name: formData.get("name"),
       });
-
-      if (!response.ok) {
-        const payload = await response.json();
-        setError(payload.error?.message ?? "Failed to register.");
-        return;
-      }
-
       window.location.reload();
-    } catch {
-      setError("Network error. Please try again.");
+    } catch (submitError) {
+      const message =
+        submitError instanceof Error ? submitError.message : "Failed to register.";
+      setError(message);
     } finally {
       setLoading(false);
     }

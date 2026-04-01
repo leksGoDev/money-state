@@ -1,4 +1,4 @@
-import { notFound } from "@/lib/api/errors";
+import { notFound } from "@/lib/api/server/errors";
 import { findUserSettingsRow } from "@/modules/settings/repository";
 import { toSettingsDto } from "@/modules/settings/mappers";
 

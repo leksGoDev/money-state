@@ -1,4 +1,4 @@
-import { notFound } from "@/lib/api/errors";
+import { notFound } from "@/lib/api/server/errors";
 import { mapIncomeRowsToDto } from "@/modules/incomes/mappers";
 import { findIncomeById, updateIncomeRow } from "@/modules/incomes/repository";
 import {

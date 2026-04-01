@@ -1,4 +1,4 @@
-import { notFound } from "@/lib/api/errors";
+import { notFound } from "@/lib/api/server/errors";
 import { toPrismaCurrency } from "@/modules/shared/enums";
 import {
   findUserSettingsRow,

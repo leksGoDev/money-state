@@ -1,4 +1,4 @@
-import { notFound } from "@/lib/api/errors";
+import { notFound } from "@/lib/api/server/errors";
 import { deleteIncomeRow, findIncomeById } from "@/modules/incomes/repository";
 
 export async function deleteIncome(userId: string, incomeId: string) {
