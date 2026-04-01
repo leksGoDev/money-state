@@ -1,0 +1,233 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Currency {
+  USD
+  EUR
+  RUB
+  CNY
+}
+
+enum TimingType {
+  SINGLE
+  MONTHLY
+  YEARLY
+}
+
+enum ObligationDirection {
+  PAY
+  RECEIVE
+}
+
+enum ObligationStatus {
+  ACTIVE
+  DONE
+  CANCELED
+}
+
+model User {
+  id            String   @id @default(cuid())
+  email         String   @unique
+  emailVerified DateTime?
+  passwordHash  String?
+  name          String?
+  baseCurrency  Currency @default(USD)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  incomes     Income[]
+  expenses    Expense[]
+  obligations Obligation[]
+  categories  Category[]
+  accounts    Account[]
+  sessions    Session[]
+}
+
+model Account {
+  id                String   @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String?  @db.Text
+  access_token      String?  @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?  @db.Text
+  session_state     String?
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+  @@index([userId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
+
+model Category {
+  id        String   @id @default(cuid())
+  userId    String
+  name      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user        User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  incomes     Income[]
+  expenses    Expense[]
+  obligations Obligation[]
+
+  @@unique([userId, name])
+  @@index([userId])
+}
+
+model Income {
+  id                 String   @id @default(cuid())
+  userId             String
+  title              String
+  amount             Decimal  @db.Decimal(14, 2)
+  currency           Currency
+  categoryId         String?
+  notes              String?
+  timingType         TimingType
+  // single timing
+  singleYear         Int?
+  singleMonth        Int?
+  // monthly timing
+  monthlyStartYear   Int?
+  monthlyStartMonth  Int?
+  monthlyEndYear     Int?
+  monthlyEndMonth    Int?
+  // yearly timing
+  yearlyMonth        Int?
+  yearlyStartYear    Int?
+  yearlyEndYear      Int?
+  // conversion link from resolved obligation
+  sourceObligationId String?     @unique
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+
+  user               User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  category           Category? @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+  sourceObligation   Obligation? @relation("ObligationIncomeConversion", fields: [sourceObligationId], references: [id], onDelete: SetNull)
+
+  @@index([userId, timingType])
+  @@index([userId, updatedAt])
+  @@index([categoryId])
+}
+
+model Expense {
+  id                 String   @id @default(cuid())
+  userId             String
+  title              String
+  amount             Decimal  @db.Decimal(14, 2)
+  currency           Currency
+  categoryId         String?
+  notes              String?
+  timingType         TimingType
+  // single timing
+  singleYear         Int?
+  singleMonth        Int?
+  // monthly timing
+  monthlyStartYear   Int?
+  monthlyStartMonth  Int?
+  monthlyEndYear     Int?
+  monthlyEndMonth    Int?
+  // yearly timing
+  yearlyMonth        Int?
+  yearlyStartYear    Int?
+  yearlyEndYear      Int?
+  // conversion link from resolved obligation
+  sourceObligationId String?     @unique
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+
+  user               User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  category           Category? @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+  sourceObligation   Obligation? @relation("ObligationExpenseConversion", fields: [sourceObligationId], references: [id], onDelete: SetNull)
+
+  @@index([userId, timingType])
+  @@index([userId, updatedAt])
+  @@index([categoryId])
+}
+
+model Obligation {
+  id              String            @id @default(cuid())
+  userId          String
+  title           String
+  amount          Decimal           @db.Decimal(14, 2)
+  currency        Currency
+  categoryId      String?
+  notes           String?
+  direction       ObligationDirection
+  status          ObligationStatus  @default(ACTIVE)
+  activeFromYear  Int
+  activeFromMonth Int
+  expectedYear    Int?
+  expectedMonth   Int?
+  resolvedYear    Int?
+  resolvedMonth   Int?
+  createdAt       DateTime          @default(now())
+  updatedAt       DateTime          @updatedAt
+
+  user              User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  category          Category? @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+  incomeConversion  Income?   @relation("ObligationIncomeConversion")
+  expenseConversion Expense?          @relation("ObligationExpenseConversion")
+
+  @@index([userId, status, direction])
+  @@index([userId, expectedYear, expectedMonth])
+  @@index([userId, updatedAt])
+  @@index([categoryId])
+}
+
+model ExchangeRateSnapshot {
+  id            String   @id @default(cuid())
+  baseCurrency  Currency
+  ratesDate     DateTime @db.Date
+  fetchedAt     DateTime @default(now())
+
+  rates ExchangeRate[]
+
+  @@unique([baseCurrency, ratesDate])
+}
+
+model ExchangeRate {
+  id           String   @id @default(cuid())
+  snapshotId   String
+  fromCurrency Currency
+  toCurrency   Currency
+  rate         Decimal  @db.Decimal(18, 8)
+
+  snapshot ExchangeRateSnapshot @relation(fields: [snapshotId], references: [id], onDelete: Cascade)
+
+  @@unique([snapshotId, fromCurrency, toCurrency])
+  @@index([fromCurrency, toCurrency])
+}
