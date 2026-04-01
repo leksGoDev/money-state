@@ -321,6 +321,11 @@ Computed views include:
 - possible values
 - range
 
+Year-view rule:
+
+- year top summary contains confirmed totals only
+- possible values and range remain month-context values and are not aggregated into one year-level possible summary
+
 ---
 
 ## Currency Model

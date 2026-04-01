@@ -136,6 +136,11 @@ This includes:
 - possible values: receive, pay
 - range: min and max
 
+Year-view rule:
+
+- the top year summary includes confirmed totals only
+- possible values and range stay contextual at the month level inside the year view
+
 ### Entity View
 
 Users can view entity lists for:

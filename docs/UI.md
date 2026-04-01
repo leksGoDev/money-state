@@ -209,6 +209,8 @@ Interactions:
 Rules:
 
 - yearly values remain attached to their configured month and are never spread across the year
+- top year summary shows confirmed totals only
+- possible values and range are shown in month cards, not as one aggregated year-level uncertainty block
 
 ### Items
 

@@ -507,7 +507,8 @@ Rules:
 
 - yearly confirmed items contribute only to their configured month
 - yearly values are never spread across months
-- year summary is derived from the 12 month calculations
+- year summary contains confirmed totals only
+- possible values and range remain inside month summaries only
 
 Example response shape:
 
