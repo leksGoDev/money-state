@@ -37,6 +37,8 @@ async function findSessionUserId(sessionToken: string): Promise<string | null> {
   });
 
   return session?.userId ?? null;
+}
+
 export async function requireRequestUserId(
   request: RequestWithSessionCookie,
 ): Promise<string> {
