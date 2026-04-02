@@ -1,7 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import type { Currency } from "@/domain/types/money";
+import type { SubmitEvent } from "react";
+import { currencyValues, type Currency } from "@/domain/types/money";
 import { updateSettingsViaApi } from "@/modules/settings/requests";
 
 type BaseCurrencyFormProps = {
@@ -12,7 +13,7 @@ export function BaseCurrencyForm({ value }: BaseCurrencyFormProps) {
   const [currency, setCurrency] = useState(value);
   const [status, setStatus] = useState<"idle" | "saving" | "saved" | "error">("idle");
 
-  async function onSubmit(event: React.FormEvent<HTMLFormElement>) {
+  async function onSubmit(event: SubmitEvent<HTMLFormElement>) {
     event.preventDefault();
     setStatus("saving");
 
@@ -35,10 +36,11 @@ export function BaseCurrencyForm({ value }: BaseCurrencyFormProps) {
         onChange={(event) => setCurrency(event.target.value as BaseCurrencyFormProps["value"])}
         className="w-full rounded-xl border border-line bg-surface px-3 py-2 text-sm"
       >
-        <option value="USD">USD</option>
-        <option value="EUR">EUR</option>
-        <option value="RUB">RUB</option>
-        <option value="CNY">CNY</option>
+        {currencyValues.map((item) => (
+          <option key={item} value={item}>
+            {item}
+          </option>
+        ))}
       </select>
       <button
         type="submit"

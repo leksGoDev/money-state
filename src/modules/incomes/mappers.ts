@@ -1,7 +1,11 @@
 import type { Prisma } from "@prisma/client";
 
 import { matchesConfirmedTiming, periodFromParts } from "@/domain";
-import { fromPrismaCurrency, toPrismaCurrency } from "@/modules/shared/enums";
+import {
+  fromPrismaCurrency,
+  toPrismaCurrency,
+  toPrismaTimingType,
+} from "@/modules/shared/enums";
 import {
   toConfirmedDomainEntry,
   toConfirmedListItemDto,
@@ -17,7 +21,7 @@ export function buildIncomesWhereClause(
     userId,
     categoryId: query.categoryId,
     currency: query.currency ? toPrismaCurrency(query.currency) : undefined,
-    timingType: query.timingType ? (query.timingType.toUpperCase() as never) : undefined,
+    timingType: query.timingType ? toPrismaTimingType(query.timingType) : undefined,
     title: query.search
       ? {
           contains: query.search,

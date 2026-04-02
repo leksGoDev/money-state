@@ -6,8 +6,8 @@ import {
   createCredentialsUser,
   findUserWithAccountsByEmail,
 } from "@/modules/auth/repository";
-import { parseRegisterPayload } from "@/modules/auth/schemas";
 import { toUserProfileDto } from "@/modules/auth/mappers";
+import { parseRegisterPayload } from "@/modules/auth/validators";
 
 export async function registerUser(payload: unknown) {
   const input = parseRegisterPayload(payload);

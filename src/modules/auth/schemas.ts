@@ -5,7 +5,3 @@ export const registerSchema = z.object({
   password: z.string().min(8).max(128),
   name: z.string().trim().min(1).max(100).optional(),
 });
-
-export function parseRegisterPayload(input: unknown) {
-  return registerSchema.parse(input);
-}
