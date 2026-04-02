@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 
 import type {
   ObligationDirection,
@@ -23,6 +24,7 @@ export function ObligationActions({
   direction,
   status,
 }: ObligationActionsProps) {
+  const router = useRouter();
   const [loading, setLoading] = useState<null | "resolve" | "cancel">(null);
   const [error, setError] = useState<string | null>(null);
 
@@ -46,7 +48,7 @@ export function ObligationActions({
         direction,
         period,
       });
-      window.location.reload();
+      router.refresh();
     } catch (submitError) {
       const message =
         submitError instanceof Error
@@ -65,7 +67,7 @@ export function ObligationActions({
 
     try {
       await cancelObligationViaApi({ obligationId, period });
-      window.location.reload();
+      router.refresh();
     } catch (submitError) {
       const message =
         submitError instanceof Error

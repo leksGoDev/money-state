@@ -8,7 +8,7 @@ export async function POST(request: Request) {
     const payload = await request.json();
     const user = await registerUser(payload);
     const response = ok(user, 201);
-    setSessionCookie(response, user.id);
+    await setSessionCookie(response, user.id);
     return response;
   });
 }

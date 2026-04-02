@@ -1,4 +1,6 @@
 import { getCurrentYearMonth } from "@/lib/date/period";
+import { getMaxSupportedYear, getMinSupportedYear } from "@/lib/date/year-bounds";
+import { toPageLoadErrorMessage } from "@/lib/api/client/load-error";
 import {
   parseIntegerParam,
   readSearchParamValue,
@@ -26,11 +28,19 @@ function isHomeMode(value: string): value is HomeMode {
 
 export function parseHomePageQuery(searchParams: SearchParamsRecord): HomePageQuery {
   const current = getCurrentYearMonth();
+  const minSupportedYear = getMinSupportedYear();
+  const maxSupportedYear = getMaxSupportedYear();
   const fallback = homeModeValues[0];
   const rawMode = readSearchParamValue(searchParams.mode) ?? fallback;
   const mode = isHomeMode(rawMode) ? rawMode : fallback;
-  const year = parseIntegerParam(readSearchParamValue(searchParams.year), current.year);
-  const month = parseIntegerParam(readSearchParamValue(searchParams.month), current.month);
+  const year = parseIntegerParam(readSearchParamValue(searchParams.year), current.year, {
+    min: minSupportedYear,
+    max: maxSupportedYear,
+  });
+  const month = parseIntegerParam(readSearchParamValue(searchParams.month), current.month, {
+    min: 1,
+    max: 12,
+  });
 
   return {
     mode,
@@ -64,12 +74,15 @@ export async function loadHomePageData(
       }),
       loadError: null,
     };
-  } catch {
+  } catch (error) {
+    console.error("Failed to load home page data.", error);
     return {
       monthData: null,
       yearData: null,
-      loadError:
+      loadError: toPageLoadErrorMessage(
+        error,
         "Unable to load aggregated view. Check database connection and session.",
+      ),
     };
   }
 }

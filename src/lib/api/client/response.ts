@@ -8,15 +8,15 @@ export async function ensureApiResponseOk(
 
   let message = fallbackMessage;
 
-  try {
-    const payload = (await response.json()) as {
-      error?: {
-        message?: string;
-      };
-    };
+  const payload = (await response.clone().json().catch(() => null)) as
+    | {
+        error?: {
+          message?: string;
+        };
+      }
+    | null;
 
-    message = payload.error?.message ?? fallbackMessage;
-  } catch {}
+  message = payload?.error?.message ?? fallbackMessage;
 
   throw new Error(message);
 }

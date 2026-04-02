@@ -13,7 +13,7 @@ type RouteContext = {
 
 export async function POST(request: NextRequest, context: RouteContext) {
   return handleApi(async () => {
-    const userId = requireRequestUserId(request);
+    const userId = await requireRequestUserId(request);
     const params = await context.params;
     const payload = await request.json();
     const result = await resolveObligation(userId, params.id, payload);

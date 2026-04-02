@@ -11,7 +11,7 @@ import {
 
 export async function GET(request: NextRequest) {
   return handleApi(async () => {
-    const userId = requireRequestUserId(request);
+    const userId = await requireRequestUserId(request);
     const query = searchParamsToObject(request.nextUrl.searchParams);
     const obligations = await listObligations(userId, query);
     return ok(obligations);
@@ -20,7 +20,7 @@ export async function GET(request: NextRequest) {
 
 export async function POST(request: NextRequest) {
   return handleApi(async () => {
-    const userId = requireRequestUserId(request);
+    const userId = await requireRequestUserId(request);
     const payload = await request.json();
     const created = await createObligation(userId, payload);
     return ok(created, 201);

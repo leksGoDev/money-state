@@ -12,13 +12,30 @@ export function readSearchParamValue(value: SearchParamValue): string | null {
 export function parseIntegerParam(
   value: string | null,
   fallback: number,
+  options?: {
+    min?: number;
+    max?: number;
+  },
 ): number {
   if (!value) {
     return fallback;
   }
 
   const parsed = Number.parseInt(value, 10);
-  return Number.isFinite(parsed) ? parsed : fallback;
+
+  if (!Number.isFinite(parsed)) {
+    return fallback;
+  }
+
+  if (options?.min != null && parsed < options.min) {
+    return fallback;
+  }
+
+  if (options?.max != null && parsed > options.max) {
+    return fallback;
+  }
+
+  return parsed;
 }
 
 export function parseStringParam(

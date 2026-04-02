@@ -7,7 +7,7 @@ import { getCurrentUserProfile } from "@/modules/auth";
 
 export async function GET(request: NextRequest) {
   return handleApi(async () => {
-    const userId = requireRequestUserId(request);
+    const userId = await requireRequestUserId(request);
     const data = await getCurrentUserProfile(userId);
     return ok(data);
   });

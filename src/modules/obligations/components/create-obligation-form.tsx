@@ -1,12 +1,17 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 
 import { currencyValues } from "@/domain/types/money";
 import { getCurrentYearMonth } from "@/lib/date/period";
+import { getMaxSupportedYear, getMinSupportedYear } from "@/lib/date/year-bounds";
 import { createObligationViaApi } from "@/modules/obligations/requests";
 
 export function CreateObligationForm() {
+  const router = useRouter();
+  const minSupportedYear = getMinSupportedYear();
+  const maxSupportedYear = getMaxSupportedYear();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const defaultCurrency = currencyValues[0];
@@ -27,7 +32,7 @@ export function CreateObligationForm() {
         activeFrom: period,
       });
 
-      window.location.reload();
+      router.refresh();
     } catch (submitError) {
       const message =
         submitError instanceof Error
@@ -84,8 +89,8 @@ export function CreateObligationForm() {
         <input
           name="expectedYear"
           type="number"
-          min="1970"
-          max="2200"
+          min={minSupportedYear}
+          max={maxSupportedYear}
           placeholder="Expected year"
           className="w-full rounded-xl border border-line bg-surface px-3 py-2 text-sm"
         />

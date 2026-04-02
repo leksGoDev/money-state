@@ -7,7 +7,7 @@ import { getSettings, updateSettings } from "@/modules/settings";
 
 export async function GET(request: NextRequest) {
   return handleApi(async () => {
-    const userId = requireRequestUserId(request);
+    const userId = await requireRequestUserId(request);
     const settings = await getSettings(userId);
     return ok(settings);
   });
@@ -15,7 +15,7 @@ export async function GET(request: NextRequest) {
 
 export async function PATCH(request: NextRequest) {
   return handleApi(async () => {
-    const userId = requireRequestUserId(request);
+    const userId = await requireRequestUserId(request);
     const payload = await request.json();
     const settings = await updateSettings(userId, payload);
     return ok(settings);
