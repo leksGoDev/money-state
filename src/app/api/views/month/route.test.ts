@@ -1,4 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
+import { ApiError } from "@/lib/api/server/errors";
 
 vi.mock("@/auth", () => ({
   auth: vi.fn(),
@@ -50,5 +51,29 @@ describe("/api/views/month route", () => {
       month: "4",
       expectedWindow: "1",
     });
+  });
+
+  it("returns 400 when month view query is invalid", async () => {
+    mockGetMonthView.mockRejectedValue(
+      new ApiError({
+        status: 400,
+        code: "BAD_REQUEST",
+        message: "Invalid month view query.",
+      }),
+    );
+
+    const request: MonthViewRequest = {
+      nextUrl: {
+        searchParams: new URLSearchParams([["year", "wrong"]]),
+      },
+      cookies: { get: vi.fn(() => ({ value: "user_1" })) },
+      headers: { get: vi.fn() },
+    } as unknown as MonthViewRequest;
+
+    const response = await route.GET(request);
+    const payload = await response.json();
+
+    expect(response.status).toBe(400);
+    expect(payload.error.code).toBe("BAD_REQUEST");
   });
 });

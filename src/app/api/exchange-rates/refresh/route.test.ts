@@ -44,6 +44,35 @@ describe("/api/exchange-rates/refresh route", () => {
     expect(response.status).toBe(401);
   });
 
+  it("returns 401 when authorization scheme is not Bearer", async () => {
+    const request = new Request("http://localhost/api/exchange-rates/refresh", {
+      method: "POST",
+      headers: {
+        authorization: "Token service-token",
+      },
+    });
+
+    const response = await route.POST(request as unknown as RefreshRequest);
+    expect(response.status).toBe(401);
+  });
+
+  it("returns 503 when service token is not configured", async () => {
+    process.env.SERVICE_API_TOKEN = "";
+
+    const request = new Request("http://localhost/api/exchange-rates/refresh", {
+      method: "POST",
+      headers: {
+        authorization: "Bearer service-token",
+      },
+    });
+
+    const response = await route.POST(request as unknown as RefreshRequest);
+    const payload = await response.json();
+
+    expect(response.status).toBe(503);
+    expect(payload.error.code).toBe("SERVICE_API_NOT_CONFIGURED");
+  });
+
   it("returns 200 and triggers refresh on valid service token", async () => {
     mockRefreshLatestExchangeRates.mockResolvedValue(
       { refreshed: true } as unknown as RefreshResult,
