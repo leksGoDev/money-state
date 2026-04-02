@@ -4,7 +4,7 @@ import {
   filterIncomesByActivePeriod,
   mapIncomeRowsToDto,
 } from "@/modules/incomes/mappers";
-import { parseListIncomesQuery } from "@/modules/incomes/schemas";
+import { parseListIncomesQuery } from "@/modules/incomes/validators";
 
 export async function listIncomes(userId: string, queryInput: unknown) {
   const query = parseListIncomesQuery(queryInput);

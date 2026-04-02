@@ -4,7 +4,7 @@ import {
   filterExpensesByActivePeriod,
   mapExpenseRowsToDto,
 } from "@/modules/expenses/mappers";
-import { parseListExpensesQuery } from "@/modules/expenses/schemas";
+import { parseListExpensesQuery } from "@/modules/expenses/validators";
 
 export async function listExpenses(userId: string, queryInput: unknown) {
   const query = parseListExpensesQuery(queryInput);
