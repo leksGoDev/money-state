@@ -7,10 +7,7 @@ import { unauthorized } from "@/lib/api/server/errors";
 export const SESSION_COOKIE_NAME = "money_state_session";
 
 export function getRequestUserId(request: NextRequest): string | null {
-  return (
-    request.cookies.get(SESSION_COOKIE_NAME)?.value ??
-    request.headers.get("x-user-id")
-  );
+  return request.cookies.get(SESSION_COOKIE_NAME)?.value ?? null;
 }
 
 export function requireRequestUserId(request: NextRequest): string {
