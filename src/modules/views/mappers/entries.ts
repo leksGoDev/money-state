@@ -30,7 +30,13 @@ function toAggregateAmount(params: {
     context: params.conversionContext,
   });
 
-  return converted ?? params.amount;
+  if (converted == null) {
+    throw new Error(
+      `Missing exchange rate for ${params.currency}->${params.conversionContext.baseCurrency}.`,
+    );
+  }
+
+  return converted;
 }
 
 function toConfirmedTiming(

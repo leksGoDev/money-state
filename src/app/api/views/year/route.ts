@@ -8,7 +8,7 @@ import { getYearView } from "@/modules/views";
 
 export async function GET(request: NextRequest) {
   return handleApi(async () => {
-    const userId = requireRequestUserId(request);
+    const userId = await requireRequestUserId(request);
     const query = searchParamsToObject(request.nextUrl.searchParams);
     const view = await getYearView(userId, query);
     return ok(view);

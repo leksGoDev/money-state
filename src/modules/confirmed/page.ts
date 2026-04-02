@@ -3,6 +3,7 @@ import {
   readSearchParamValue,
   type SearchParamsRecord,
 } from "@/lib/http/query";
+import { toPageLoadErrorMessage } from "@/lib/api/client/load-error";
 import {
   itemsCreateConfig,
   itemsTabValues,
@@ -40,11 +41,15 @@ export async function loadItemsPageData(userId: string): Promise<ItemsPageData> 
       expenses,
       loadError: null,
     };
-  } catch {
+  } catch (error) {
+    console.error("Failed to load items page data.", error);
     return {
       incomes: [],
       expenses: [],
-      loadError: "Unable to load items. Check database connection.",
+      loadError: toPageLoadErrorMessage(
+        error,
+        "Unable to load items. Check database connection.",
+      ),
     };
   }
 }

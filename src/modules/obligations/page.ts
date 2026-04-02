@@ -1,4 +1,5 @@
 import { isOverdueObligation, periodFromParts } from "@/domain";
+import { toPageLoadErrorMessage } from "@/lib/api/client/load-error";
 import { getCurrentYearMonth } from "@/lib/date/period";
 import { listObligations } from "@/modules/obligations";
 import type { ObligationDto } from "@/modules/obligations/types";
@@ -38,10 +39,14 @@ export async function loadObligationsPageData(
       obligations: await listObligations(userId, {}),
       loadError: null,
     };
-  } catch {
+  } catch (error) {
+    console.error("Failed to load obligations page data.", error);
     return {
       obligations: [],
-      loadError: "Unable to load obligations. Check database connection.",
+      loadError: toPageLoadErrorMessage(
+        error,
+        "Unable to load obligations. Check database connection.",
+      ),
     };
   }
 }

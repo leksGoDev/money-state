@@ -17,7 +17,7 @@ type RouteContext = {
 
 export async function GET(request: NextRequest, context: RouteContext) {
   return handleApi(async () => {
-    const userId = requireRequestUserId(request);
+    const userId = await requireRequestUserId(request);
     const params = await context.params;
     const obligation = await getObligationById(userId, params.id);
     return ok(obligation);
@@ -26,7 +26,7 @@ export async function GET(request: NextRequest, context: RouteContext) {
 
 export async function PATCH(request: NextRequest, context: RouteContext) {
   return handleApi(async () => {
-    const userId = requireRequestUserId(request);
+    const userId = await requireRequestUserId(request);
     const params = await context.params;
     const payload = await request.json();
     const obligation = await updateObligation(userId, params.id, payload);
@@ -36,7 +36,7 @@ export async function PATCH(request: NextRequest, context: RouteContext) {
 
 export async function DELETE(request: NextRequest, context: RouteContext) {
   return handleApi(async () => {
-    const userId = requireRequestUserId(request);
+    const userId = await requireRequestUserId(request);
     const params = await context.params;
     const result = await deleteObligation(userId, params.id);
     return ok(result);

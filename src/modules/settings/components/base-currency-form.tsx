@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import type { SubmitEvent } from "react";
+import { useRouter } from "next/navigation";
 import { currencyValues, type Currency } from "@/domain/types/money";
 import { updateSettingsViaApi } from "@/modules/settings/requests";
 
@@ -10,6 +11,7 @@ type BaseCurrencyFormProps = {
 };
 
 export function BaseCurrencyForm({ value }: BaseCurrencyFormProps) {
+  const router = useRouter();
   const [currency, setCurrency] = useState(value);
   const [status, setStatus] = useState<"idle" | "saving" | "saved" | "error">("idle");
 
@@ -20,7 +22,7 @@ export function BaseCurrencyForm({ value }: BaseCurrencyFormProps) {
     try {
       await updateSettingsViaApi(currency);
       setStatus("saved");
-      window.location.reload();
+      router.refresh();
     } catch {
       setStatus("error");
     }

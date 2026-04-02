@@ -1,9 +1,7 @@
 import { z } from "zod";
 
 import { currencyValues } from "@/domain/types/money";
-
-const yearSchema = z.number().int().min(1970).max(2200);
-const monthSchema = z.number().int().min(1).max(12);
+import { monthSchema, yearSchema } from "@/modules/shared/schemas";
 
 export const confirmedEntityCreateSchema = z
   .object({

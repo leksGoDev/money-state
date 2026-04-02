@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 
 import { currencyValues } from "@/domain/types/money";
 import { getCurrentYearMonth } from "@/lib/date/period";
@@ -13,6 +14,7 @@ type CreateConfirmedFormProps = {
 };
 
 export function CreateConfirmedForm({ endpoint, label }: CreateConfirmedFormProps) {
+  const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const defaultCurrency = currencyValues[0];
@@ -33,7 +35,7 @@ export function CreateConfirmedForm({ endpoint, label }: CreateConfirmedFormProp
         month: period.month,
       });
 
-      window.location.reload();
+      router.refresh();
     } catch (submitError) {
       const fallback = `Unable to create ${label.toLowerCase()}.`;
       const message = submitError instanceof Error ? submitError.message : fallback;

@@ -1,10 +1,12 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 
 import { registerViaApi } from "@/modules/auth/requests";
 
 export function RegisterForm() {
+  const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -18,7 +20,7 @@ export function RegisterForm() {
         password: formData.get("password"),
         name: formData.get("name"),
       });
-      window.location.reload();
+      router.refresh();
     } catch (submitError) {
       const message =
         submitError instanceof Error ? submitError.message : "Failed to register.";
