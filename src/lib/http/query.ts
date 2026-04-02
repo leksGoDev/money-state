@@ -1,3 +1,14 @@
+export type SearchParamValue = string | string[] | undefined;
+export type SearchParamsRecord = Record<string, SearchParamValue>;
+
+export function readSearchParamValue(value: SearchParamValue): string | null {
+  if (Array.isArray(value)) {
+    return value[0] ?? null;
+  }
+
+  return value ?? null;
+}
+
 export function parseIntegerParam(
   value: string | null,
   fallback: number,

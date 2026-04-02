@@ -1,8 +1,9 @@
 import type { Currency } from "@/domain/types/money";
 import { ensureApiResponseOk } from "@/lib/api/client/response";
+import { apiPaths } from "@/lib/routes/api";
 
 export async function updateSettingsViaApi(baseCurrency: Currency): Promise<void> {
-  const response = await fetch("/api/settings", {
+  const response = await fetch(apiPaths.settings, {
     method: "PATCH",
     headers: {
       "Content-Type": "application/json",
