@@ -11,7 +11,7 @@ import {
 import { convertAmount, type ConversionContext } from "@/modules/exchange-rates";
 import { toObligationDto } from "@/modules/obligations/mappers";
 import type { ObligationDto } from "@/modules/obligations/types";
-import { fromPrismaCurrency } from "@/modules/shared/enums";
+import { fromPrismaCurrency } from "@/modules/shared/repository-enums";
 import { toMonthNumber } from "@/modules/views/mappers/entries";
 
 function isDefined<T>(value: T | undefined): value is T {

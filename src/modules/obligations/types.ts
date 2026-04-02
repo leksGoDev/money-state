@@ -3,6 +3,10 @@ import type { z } from "zod";
 
 import type { Currency } from "@/domain/types/money";
 import type {
+  ObligationDirection,
+  ObligationStatus,
+} from "@/domain/types/obligation";
+import type {
   obligationCreateSchema,
   cancelObligationSchema,
   listObligationsQuerySchema,
@@ -29,8 +33,8 @@ export type ObligationDto = {
   convertedAmount: string | null;
   baseCurrency: Currency;
   ratesDate: string | null;
-  direction: "pay" | "receive";
-  status: "active" | "done" | "canceled";
+  direction: ObligationDirection;
+  status: ObligationStatus;
   activeFromYear: number;
   activeFromMonth: number;
   expectedYear: number | null;

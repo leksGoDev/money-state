@@ -1,7 +1,10 @@
 import { Currency as PrismaCurrency } from "@prisma/client";
 
 import type { Currency } from "@/domain/types/money";
-import { fromPrismaCurrency, toPrismaCurrency } from "@/modules/shared/enums";
+import {
+  fromPrismaCurrency,
+  toPrismaCurrency,
+} from "@/modules/shared/repository-enums";
 import { supportedCurrencies } from "@/modules/exchange-rates/constants";
 import type { FrankfurterLatestResponse, RatesMap } from "@/modules/exchange-rates/types";
 

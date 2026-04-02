@@ -1,6 +1,6 @@
 import type { Currency as PrismaCurrency } from "@prisma/client";
 
-import { fromPrismaCurrency } from "@/modules/shared/enums";
+import { fromPrismaCurrency } from "@/modules/shared/repository-enums";
 import type { UserProfileDto } from "@/modules/auth/types";
 
 type UserWithAccounts = {

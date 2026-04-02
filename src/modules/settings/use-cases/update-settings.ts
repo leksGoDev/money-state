@@ -1,5 +1,5 @@
 import { notFound } from "@/lib/api/server/errors";
-import { toPrismaCurrency } from "@/modules/shared/enums";
+import { toPrismaCurrency } from "@/modules/shared/repository-enums";
 import {
   findUserSettingsRow,
   updateUserBaseCurrencyRow,

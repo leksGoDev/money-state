@@ -7,7 +7,7 @@ import {
   toPersistenceCurrency,
   toPersistenceTimingType,
 } from "@/modules/confirmed/shared";
-import { getUserCurrencyContext } from "@/modules/shared/user-currency";
+import { getUserCurrencyContext } from "@/modules/shared/currency-context";
 import type { IncomeDto, IncomeRow, ListIncomesQuery } from "@/modules/confirmed/income/types";
 
 export function buildIncomesWhereClause(

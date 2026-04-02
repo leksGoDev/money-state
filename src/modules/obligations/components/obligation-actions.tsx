@@ -2,6 +2,10 @@
 
 import { useState } from "react";
 
+import type {
+  ObligationDirection,
+  ObligationStatus,
+} from "@/domain/types/obligation";
 import { getCurrentYearMonth } from "@/lib/date/period";
 import {
   cancelObligationViaApi,
@@ -10,8 +14,8 @@ import {
 
 type ObligationActionsProps = {
   obligationId: string;
-  direction: "pay" | "receive";
-  status: "active" | "done" | "canceled";
+  direction: ObligationDirection;
+  status: ObligationStatus;
 };
 
 export function ObligationActions({

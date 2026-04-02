@@ -8,7 +8,12 @@ import {
 } from "@/domain";
 import { matchesConfirmedTiming, periodFromParts } from "@/domain";
 import { convertAmount, type ConversionContext } from "@/modules/exchange-rates";
-import { fromPrismaCurrency } from "@/modules/shared/enums";
+import {
+  fromPrismaCurrency,
+  fromPrismaObligationDirection,
+  fromPrismaObligationStatus,
+  fromPrismaTimingType,
+} from "@/modules/shared/repository-enums";
 
 export function toMonthNumber(value: number): MonthNumber {
   return value as MonthNumber;
@@ -33,7 +38,9 @@ function toConfirmedTiming(
   fallbackYear: number,
   fallbackMonth: number,
 ) {
-  if (row.timingType === "SINGLE") {
+  const timingType = fromPrismaTimingType(row.timingType);
+
+  if (timingType === "single") {
     return {
       timingType: "single" as const,
       year: row.singleYear ?? fallbackYear,
@@ -41,7 +48,7 @@ function toConfirmedTiming(
     };
   }
 
-  if (row.timingType === "MONTHLY") {
+  if (timingType === "monthly") {
     return {
       timingType: "monthly" as const,
       startYear: row.monthlyStartYear ?? fallbackYear,
@@ -91,9 +98,8 @@ function toObligationEntry(
       currency: fromPrismaCurrency(row.currency),
       conversionContext,
     }),
-    direction: row.direction === "PAY" ? "pay" : "receive",
-    status:
-      row.status === "ACTIVE" ? "active" : row.status === "DONE" ? "done" : "canceled",
+    direction: fromPrismaObligationDirection(row.direction),
+    status: fromPrismaObligationStatus(row.status),
     activeFromYear: row.activeFromYear,
     activeFromMonth: toMonthNumber(row.activeFromMonth),
     expectedYear: row.expectedYear,

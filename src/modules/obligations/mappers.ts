@@ -11,8 +11,8 @@ import {
   toPrismaCurrency,
   toPrismaObligationDirection,
   toPrismaObligationStatus,
-} from "@/modules/shared/enums";
-import { getUserCurrencyContext } from "@/modules/shared/user-currency";
+} from "@/modules/shared/repository-enums";
+import { getUserCurrencyContext } from "@/modules/shared/currency-context";
 import type {
   ListObligationsQuery,
   ObligationDto,

@@ -1,4 +1,4 @@
-import { getUserCurrencyContext } from "@/modules/shared/user-currency";
+import { getUserCurrencyContext } from "@/modules/shared/currency-context";
 import { parseYearViewQuery } from "@/modules/views/validators";
 import { loadViewRows } from "@/modules/views/repository";
 import {

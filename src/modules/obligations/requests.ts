@@ -1,4 +1,5 @@
 import { ensureApiResponseOk } from "@/lib/api/client/response";
+import type { ObligationDirection } from "@/domain/types/obligation";
 
 type Period = {
   year: number;
@@ -41,7 +42,7 @@ export async function createObligationViaApi(
 export async function resolveObligationViaApi(params: {
   obligationId: string;
   mode: "closed" | "converted";
-  direction: "pay" | "receive";
+  direction: ObligationDirection;
   period: Period;
 }): Promise<void> {
   const response = await fetch(`/api/obligations/${params.obligationId}/resolve`, {

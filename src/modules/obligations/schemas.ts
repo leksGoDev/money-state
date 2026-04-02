@@ -1,12 +1,16 @@
 import { z } from "zod";
 
+import {
+  obligationDirectionValues,
+  obligationStatusValues,
+} from "@/domain/types/obligation";
 import { currencySchema, monthSchema, yearSchema } from "@/modules/shared/schemas";
 
 export const obligationCreateSchema = z.object({
   title: z.string().trim().min(1).max(140),
   amount: z.coerce.number().positive(),
   currency: currencySchema,
-  direction: z.enum(["pay", "receive"]),
+  direction: z.enum(obligationDirectionValues),
   activeFromYear: yearSchema,
   activeFromMonth: monthSchema,
   expectedYear: yearSchema.nullable().optional(),
@@ -17,8 +21,8 @@ export const obligationCreateSchema = z.object({
 
 export const listObligationsQuerySchema = z.object({
   search: z.string().trim().optional(),
-  status: z.enum(["active", "done", "canceled"]).optional(),
-  direction: z.enum(["pay", "receive"]).optional(),
+  status: z.enum(obligationStatusValues).optional(),
+  direction: z.enum(obligationDirectionValues).optional(),
   categoryId: z.string().cuid().optional(),
   currency: currencySchema.optional(),
   hasExpectedPeriod: z.coerce.boolean().optional(),
