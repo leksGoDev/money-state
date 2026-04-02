@@ -1,4 +1,4 @@
-import { AppShell } from "@/components/shared/app-shell";
+import { PageContainer } from "@/components/shared/page-container";
 
 const navigationItems = [
   "Home",
@@ -9,7 +9,7 @@ const navigationItems = [
 
 export default function HomePage() {
   return (
-    <AppShell>
+    <PageContainer>
       <section className="space-y-5 rounded-[2rem] border border-line bg-surface p-6 shadow-card">
         <div className="space-y-2">
           <p className="text-xs uppercase tracking-[0.24em] text-muted-foreground">
@@ -65,6 +65,6 @@ export default function HomePage() {
           </div>
         ))}
       </nav>
-    </AppShell>
+    </PageContainer>
   );
 }

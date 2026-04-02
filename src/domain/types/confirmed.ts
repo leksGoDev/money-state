@@ -2,6 +2,8 @@ import type { MonthNumber } from "@/domain/types/period";
 
 export const confirmedKindValues = ["income", "expense"] as const;
 export type ConfirmedKind = (typeof confirmedKindValues)[number];
+export const confirmedTimingTypeValues = ["single", "monthly", "yearly"] as const;
+export type ConfirmedTimingType = (typeof confirmedTimingTypeValues)[number];
 
 export type SingleTiming = {
   timingType: "single";
