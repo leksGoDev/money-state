@@ -1,8 +1,9 @@
 import { describe, expect, it } from "vitest";
 
 import { buildIncomesWhereClause, filterIncomesByActivePeriod } from "@/modules/confirmed/income/mappers";
+import type { IncomeRow, ListIncomesQuery } from "@/modules/confirmed/income/types";
 
-function buildConfirmedRow(overrides: Record<string, unknown>) {
+function buildConfirmedRow(overrides: Partial<IncomeRow>): IncomeRow {
   return {
     id: "row_1",
     title: "Item",
@@ -52,7 +53,7 @@ describe("income mappers", () => {
       }),
     ];
 
-    const incomes = filterIncomesByActivePeriod(rows as never, {
+    const incomes = filterIncomesByActivePeriod(rows, {
       activeInYear: 2026,
       activeInMonth: 4,
     });
@@ -63,7 +64,7 @@ describe("income mappers", () => {
   it("returns unfiltered rows when active period query is missing", () => {
     const rows = [buildConfirmedRow({ id: "a" }), buildConfirmedRow({ id: "b" })];
 
-    const result = filterIncomesByActivePeriod(rows as never, {} as never);
+    const result = filterIncomesByActivePeriod(rows, {} as ListIncomesQuery);
     expect(result).toHaveLength(2);
   });
 

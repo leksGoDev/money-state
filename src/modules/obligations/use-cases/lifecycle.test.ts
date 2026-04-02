@@ -1,4 +1,4 @@
-import { ObligationDirection, ObligationStatus } from "@prisma/client";
+import { ObligationDirection, ObligationStatus, type Prisma } from "@prisma/client";
 import { describe, expect, it, vi, beforeEach } from "vitest";
 
 vi.mock("@/modules/obligations/repository", () => ({
@@ -24,6 +24,11 @@ import * as repository from "@/modules/obligations/repository";
 
 const mockRepo = vi.mocked(repository);
 const mockMappers = vi.mocked(mappers);
+type ResolveRow = NonNullable<Awaited<ReturnType<typeof repository.findObligationForResolve>>>;
+type ByIdRow = NonNullable<Awaited<ReturnType<typeof repository.findObligationById>>>;
+type StatusRow = Awaited<ReturnType<typeof repository.resolveObligationStatus>>;
+type IncomeRow = Awaited<ReturnType<typeof repository.createIncomeFromObligation>>;
+type MapDto = Awaited<ReturnType<typeof mappers.mapObligationRowsToDto>>;
 
 function buildObligationRow(overrides: Record<string, unknown> = {}) {
   return {
@@ -49,16 +54,27 @@ function buildObligationRow(overrides: Record<string, unknown> = {}) {
   };
 }
 
+function asResolveRow(overrides: Record<string, unknown> = {}): ResolveRow {
+  return buildObligationRow(overrides) as unknown as ResolveRow;
+}
+
+function asByIdRow(overrides: Record<string, unknown> = {}): ByIdRow {
+  return buildObligationRow(overrides) as unknown as ByIdRow;
+}
+
+function asStatusRow(overrides: Record<string, unknown> = {}): StatusRow {
+  return buildObligationRow(overrides) as unknown as StatusRow;
+}
+
 describe("obligation lifecycle use-cases", () => {
   beforeEach(() => {
     vi.resetAllMocks();
     mockRepo.withObligationsTransaction.mockImplementation(async (action) =>
-      action({} as never),
+      action({} as unknown as Prisma.TransactionClient),
     );
     mockMappers.mapObligationRowsToDto.mockResolvedValue([
-      { id: "dto_1", status: "done" } as never,
+      { id: "dto_1", status: "done" } as unknown as MapDto[number],
     ]);
-    mockMappers.toObligationCreateData.mockReturnValue({ title: "Updated" } as never);
   });
 
   it("rejects resolve when obligation does not exist", async () => {
@@ -75,7 +91,7 @@ describe("obligation lifecycle use-cases", () => {
 
   it("rejects resolve when obligation is not active", async () => {
     mockRepo.findObligationForResolve.mockResolvedValue(
-      buildObligationRow({ status: ObligationStatus.CANCELED }) as never,
+      asResolveRow({ status: ObligationStatus.CANCELED }),
     );
 
     await expect(
@@ -89,7 +105,7 @@ describe("obligation lifecycle use-cases", () => {
 
   it("rejects converted resolve when conversion already exists before status update", async () => {
     mockRepo.findObligationForResolve.mockResolvedValue(
-      buildObligationRow({ incomeConversion: { id: "inc_1" } }) as never,
+      asResolveRow({ incomeConversion: { id: "inc_1" } }),
     );
 
     await expect(
@@ -106,10 +122,12 @@ describe("obligation lifecycle use-cases", () => {
 
   it("resolves in converted mode and creates income for RECEIVE direction", async () => {
     mockRepo.findObligationForResolve.mockResolvedValue(
-      buildObligationRow({ direction: ObligationDirection.RECEIVE }) as never,
+      asResolveRow({ direction: ObligationDirection.RECEIVE }),
     );
-    mockRepo.resolveObligationStatus.mockResolvedValue(buildObligationRow() as never);
-    mockRepo.createIncomeFromObligation.mockResolvedValue({ id: "inc_1" } as never);
+    mockRepo.resolveObligationStatus.mockResolvedValue(asStatusRow());
+    mockRepo.createIncomeFromObligation.mockResolvedValue(
+      { id: "inc_1" } as unknown as IncomeRow,
+    );
 
     const result = await resolveObligation("u1", "ob_1", {
       resolution: "converted",
@@ -123,8 +141,8 @@ describe("obligation lifecycle use-cases", () => {
   });
 
   it("resolves in closed mode without creating confirmed entities", async () => {
-    mockRepo.findObligationForResolve.mockResolvedValue(buildObligationRow() as never);
-    mockRepo.resolveObligationStatus.mockResolvedValue(buildObligationRow() as never);
+    mockRepo.findObligationForResolve.mockResolvedValue(asResolveRow());
+    mockRepo.resolveObligationStatus.mockResolvedValue(asStatusRow());
 
     const result = await resolveObligation("u1", "ob_1", {
       resolution: "closed",
@@ -139,7 +157,7 @@ describe("obligation lifecycle use-cases", () => {
 
   it("cancels only active obligations", async () => {
     mockRepo.findObligationById.mockResolvedValue(
-      buildObligationRow({ status: ObligationStatus.DONE }) as never,
+      asByIdRow({ status: ObligationStatus.DONE }),
     );
 
     await expect(
@@ -151,9 +169,9 @@ describe("obligation lifecycle use-cases", () => {
   });
 
   it("marks obligation as canceled with resolved period", async () => {
-    mockRepo.findObligationById.mockResolvedValue(buildObligationRow() as never);
+    mockRepo.findObligationById.mockResolvedValue(asByIdRow());
     mockRepo.resolveObligationStatus.mockResolvedValue(
-      buildObligationRow({ status: ObligationStatus.CANCELED, resolvedMonth: 4 }) as never,
+      asStatusRow({ status: ObligationStatus.CANCELED, resolvedMonth: 4 }),
     );
 
     await cancelObligation("u1", "ob_1", {
@@ -174,7 +192,7 @@ describe("obligation lifecycle use-cases", () => {
 
   it("blocks editing done/canceled obligations", async () => {
     mockRepo.findObligationById.mockResolvedValue(
-      buildObligationRow({ status: ObligationStatus.DONE }) as never,
+      asByIdRow({ status: ObligationStatus.DONE }),
     );
 
     await expect(

@@ -8,6 +8,9 @@ import { getConversionContext } from "@/modules/exchange-rates/use-cases/get-con
 import * as repository from "@/modules/exchange-rates/repository";
 
 const mockRepo = vi.mocked(repository);
+type SnapshotResult = NonNullable<
+  Awaited<ReturnType<typeof repository.findLatestRatesSnapshot>>
+>;
 
 describe("getConversionContext", () => {
   beforeEach(() => {
@@ -34,7 +37,7 @@ describe("getConversionContext", () => {
           rate: "1.2",
         },
       ],
-    } as never);
+    } as unknown as SnapshotResult);
 
     const context = await getConversionContext("USD");
 

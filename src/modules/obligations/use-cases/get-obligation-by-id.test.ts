@@ -14,15 +14,19 @@ import * as repository from "@/modules/obligations/repository";
 
 const mockRepo = vi.mocked(repository);
 const mockMappers = vi.mocked(mappers);
+type ObligationDto = Awaited<ReturnType<typeof mappers.mapObligationRowsToDto>>[number];
+type ObligationRow = NonNullable<Awaited<ReturnType<typeof repository.findObligationById>>>;
 
 describe("getObligationById", () => {
   beforeEach(() => {
     vi.resetAllMocks();
-    mockMappers.mapObligationRowsToDto.mockResolvedValue([{ id: "ob_1" } as never]);
+    mockMappers.mapObligationRowsToDto.mockResolvedValue([
+      { id: "ob_1" } as unknown as ObligationDto,
+    ]);
   });
 
   it("passes userId to repository scope", async () => {
-    mockRepo.findObligationById.mockResolvedValue({ id: "ob_1" } as never);
+    mockRepo.findObligationById.mockResolvedValue({ id: "ob_1" } as unknown as ObligationRow);
 
     await getObligationById("user_1", "ob_1");
 
