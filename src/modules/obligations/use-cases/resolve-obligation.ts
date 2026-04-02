@@ -29,6 +29,10 @@ export async function resolveObligation(
       badRequest("Only active obligations can be resolved.");
     }
 
+    if (obligation.incomeConversion || obligation.expenseConversion) {
+      badRequest("Obligation is already converted.");
+    }
+
     const updatedObligation = await resolveObligationStatus(tx, obligationId, {
       status: ObligationStatus.DONE,
       resolvedYear: input.resolvedYear,
@@ -41,10 +45,6 @@ export async function resolveObligation(
         obligation: dto,
         conversion: null,
       };
-    }
-
-    if (obligation.incomeConversion || obligation.expenseConversion) {
-      badRequest("Obligation is already converted.");
     }
 
     const conversionTitle = input.confirmed.title ?? obligation.title;
