@@ -3,12 +3,21 @@ import { ZodError } from "zod";
 import { ApiError } from "@/lib/api/server/errors";
 import { fail } from "@/lib/api/server/response";
 
-export async function handleApi<T>(
-  action: () => Promise<T>,
+export async function handleApi(
+  action: () => Promise<unknown>,
 ): Promise<Response> {
   try {
     const result = await action();
-    return result as Response;
+
+    if (!(result instanceof Response)) {
+      throw new ApiError({
+        status: 500,
+        code: "INVALID_API_RESPONSE",
+        message: "Route handler must return a Response instance.",
+      });
+    }
+
+    return result;
   } catch (error) {
     if (error instanceof ApiError) {
       return fail({
