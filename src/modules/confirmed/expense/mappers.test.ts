@@ -1,8 +1,9 @@
 import { describe, expect, it } from "vitest";
 
 import { buildExpensesWhereClause, filterExpensesByActivePeriod } from "@/modules/confirmed/expense/mappers";
+import type { ExpenseRow } from "@/modules/confirmed/expense/types";
 
-function buildConfirmedRow(overrides: Record<string, unknown>) {
+function buildConfirmedRow(overrides: Partial<ExpenseRow>): ExpenseRow {
   return {
     id: "row_1",
     title: "Item",
@@ -52,7 +53,7 @@ describe("expense mappers", () => {
       }),
     ];
 
-    const expenses = filterExpensesByActivePeriod(rows as never, {
+    const expenses = filterExpensesByActivePeriod(rows, {
       activeInYear: 2026,
       activeInMonth: 4,
     });

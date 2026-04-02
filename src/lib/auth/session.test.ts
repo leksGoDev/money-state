@@ -22,7 +22,7 @@ function createRequest(params: { cookieUserId?: string }) {
           ? { value: params.cookieUserId }
           : undefined,
     },
-  } as never;
+  };
 }
 
 describe("session request helpers", () => {
