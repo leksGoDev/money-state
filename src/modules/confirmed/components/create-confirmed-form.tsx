@@ -15,6 +15,7 @@ type CreateConfirmedFormProps = {
 export function CreateConfirmedForm({ endpoint, label }: CreateConfirmedFormProps) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const defaultCurrency = currencyValues[0];
 
   async function onSubmit(formData: FormData) {
     setError(null);
@@ -65,7 +66,7 @@ export function CreateConfirmedForm({ endpoint, label }: CreateConfirmedFormProp
         />
         <select
           name="currency"
-          defaultValue="USD"
+          defaultValue={defaultCurrency}
           className="w-full rounded-xl border border-line bg-surface px-3 py-2 text-sm"
         >
           {currencyValues.map((currency) => (

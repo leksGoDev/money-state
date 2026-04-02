@@ -1,7 +1,8 @@
 import type { ConfirmedTimingType } from "@/domain/types/confirmed";
 import type { Currency } from "@/domain/types/money";
+import { apiPaths } from "@/lib/routes/api";
 
-export type ConfirmedEndpoint = "/api/incomes" | "/api/expenses";
+export type ConfirmedEndpoint = typeof apiPaths.incomes | typeof apiPaths.expenses;
 
 export type ConfirmedInput = {
   title: string;

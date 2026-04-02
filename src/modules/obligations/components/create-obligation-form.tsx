@@ -9,6 +9,7 @@ import { createObligationViaApi } from "@/modules/obligations/requests";
 export function CreateObligationForm() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const defaultCurrency = currencyValues[0];
 
   async function onSubmit(formData: FormData) {
     setError(null);
@@ -61,7 +62,7 @@ export function CreateObligationForm() {
         />
         <select
           name="currency"
-          defaultValue="USD"
+          defaultValue={defaultCurrency}
           className="w-full rounded-xl border border-line bg-surface px-3 py-2 text-sm"
         >
           {currencyValues.map((currency) => (

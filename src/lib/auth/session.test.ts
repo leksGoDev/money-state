@@ -8,9 +8,13 @@ vi.mock("next/headers", () => ({
   cookies: vi.fn(),
 }));
 
-import { getRequestUserId, requireRequestUserId, SESSION_COOKIE_NAME } from "@/lib/auth/session";
+import {
+  getRequestUserId,
+  requireRequestUserId,
+  SESSION_COOKIE_NAME,
+} from "@/lib/auth/session";
 
-function createRequest(params: { cookieUserId?: string; headerUserId?: string }) {
+function createRequest(params: { cookieUserId?: string }) {
   return {
     cookies: {
       get: (name: string) =>
@@ -18,21 +22,18 @@ function createRequest(params: { cookieUserId?: string; headerUserId?: string })
           ? { value: params.cookieUserId }
           : undefined,
     },
-    headers: {
-      get: (name: string) => (name === "x-user-id" ? params.headerUserId ?? null : null),
-    },
   } as never;
 }
 
 describe("session request helpers", () => {
   it("extracts user id from session cookie first", () => {
-    const request = createRequest({ cookieUserId: "cookie_u", headerUserId: "header_u" });
+    const request = createRequest({ cookieUserId: "cookie_u" });
     expect(getRequestUserId(request)).toBe("cookie_u");
   });
 
-  it("falls back to x-user-id header", () => {
-    const request = createRequest({ headerUserId: "header_u" });
-    expect(getRequestUserId(request)).toBe("header_u");
+  it("does not use x-user-id header fallback", () => {
+    const request = createRequest({});
+    expect(getRequestUserId(request)).toBeNull();
   });
 
   it("throws unauthorized when user id is missing", () => {

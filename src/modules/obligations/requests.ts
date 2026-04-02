@@ -1,5 +1,10 @@
 import { ensureApiResponseOk } from "@/lib/api/client/response";
 import type { ObligationDirection } from "@/domain/types/obligation";
+import {
+  apiPaths,
+  obligationCancelApiPath,
+  obligationResolveApiPath,
+} from "@/lib/routes/api";
 
 type Period = {
   year: number;
@@ -19,7 +24,7 @@ type CreateObligationPayload = {
 export async function createObligationViaApi(
   payload: CreateObligationPayload,
 ): Promise<void> {
-  const response = await fetch("/api/obligations", {
+  const response = await fetch(apiPaths.obligations, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -45,7 +50,7 @@ export async function resolveObligationViaApi(params: {
   direction: ObligationDirection;
   period: Period;
 }): Promise<void> {
-  const response = await fetch(`/api/obligations/${params.obligationId}/resolve`, {
+  const response = await fetch(obligationResolveApiPath(params.obligationId), {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -76,7 +81,7 @@ export async function cancelObligationViaApi(params: {
   obligationId: string;
   period: Period;
 }): Promise<void> {
-  const response = await fetch(`/api/obligations/${params.obligationId}/cancel`, {
+  const response = await fetch(obligationCancelApiPath(params.obligationId), {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
