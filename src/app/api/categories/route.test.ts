@@ -8,6 +8,11 @@ vi.mock("@/modules/categories", () => ({
 }));
 
 import { auth } from "@/auth";
+
+type MockAuthSession = { user?: { id?: string } } | null;
+const mockAuth = vi.mocked(
+  auth as unknown as () => Promise<MockAuthSession>,
+);
 import * as route from "@/app/api/categories/route";
 import { createCategory, listCategories } from "@/modules/categories";
 
@@ -21,7 +26,7 @@ const mockListCategories = vi.mocked(listCategories);
 describe("/api/categories route", () => {
   beforeEach(() => {
     vi.resetAllMocks();
-    vi.mocked(auth).mockResolvedValue({ user: { id: "user_1" } } as never);
+    mockAuth.mockResolvedValue({ user: { id: "user_1" } });
   });
 
   it("GET wires userId", async () => {

@@ -7,6 +7,11 @@ vi.mock("@/modules/auth", () => ({
 }));
 
 import { auth } from "@/auth";
+
+type MockAuthSession = { user?: { id?: string } } | null;
+const mockAuth = vi.mocked(
+  auth as unknown as () => Promise<MockAuthSession>,
+);
 import * as route from "@/app/api/me/route";
 import { getCurrentUserProfile } from "@/modules/auth";
 
@@ -18,7 +23,7 @@ const mockGetCurrentUserProfile = vi.mocked(getCurrentUserProfile);
 describe("/api/me route", () => {
   beforeEach(() => {
     vi.resetAllMocks();
-    vi.mocked(auth).mockResolvedValue({ user: { id: "user_1" } } as never);
+    mockAuth.mockResolvedValue({ user: { id: "user_1" } });
   });
 
   it("returns current user profile for request user", async () => {

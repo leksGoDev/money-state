@@ -8,6 +8,11 @@ vi.mock("@/modules/settings", () => ({
 }));
 
 import { auth } from "@/auth";
+
+type MockAuthSession = { user?: { id?: string } } | null;
+const mockAuth = vi.mocked(
+  auth as unknown as () => Promise<MockAuthSession>,
+);
 import * as route from "@/app/api/settings/route";
 import { getSettings, updateSettings } from "@/modules/settings";
 
@@ -21,7 +26,7 @@ const mockUpdateSettings = vi.mocked(updateSettings);
 describe("/api/settings route", () => {
   beforeEach(() => {
     vi.resetAllMocks();
-    vi.mocked(auth).mockResolvedValue({ user: { id: "user_1" } } as never);
+    mockAuth.mockResolvedValue({ user: { id: "user_1" } });
   });
 
   it("GET returns settings for request user", async () => {

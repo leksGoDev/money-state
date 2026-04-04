@@ -9,6 +9,11 @@ vi.mock("@/modules/categories", () => ({
 }));
 
 import { auth } from "@/auth";
+
+type MockAuthSession = { user?: { id?: string } } | null;
+const mockAuth = vi.mocked(
+  auth as unknown as () => Promise<MockAuthSession>,
+);
 import * as route from "@/app/api/categories/[id]/route";
 import {
   deleteCategory,
@@ -33,7 +38,7 @@ const context: CategoryItemContext = {
 describe("/api/categories/[id] route", () => {
   beforeEach(() => {
     vi.resetAllMocks();
-    vi.mocked(auth).mockResolvedValue({ user: { id: "user_1" } } as never);
+    mockAuth.mockResolvedValue({ user: { id: "user_1" } });
   });
 
   it("GET wires userId and id", async () => {

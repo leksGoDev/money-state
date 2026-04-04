@@ -8,6 +8,11 @@ vi.mock("@/modules/confirmed/expense", () => ({
 }));
 
 import { auth } from "@/auth";
+
+type MockAuthSession = { user?: { id?: string } } | null;
+const mockAuth = vi.mocked(
+  auth as unknown as () => Promise<MockAuthSession>,
+);
 import * as route from "@/app/api/expenses/route";
 import { createExpense, listExpenses } from "@/modules/confirmed/expense";
 
@@ -21,7 +26,7 @@ const mockListExpenses = vi.mocked(listExpenses);
 describe("/api/expenses route", () => {
   beforeEach(() => {
     vi.resetAllMocks();
-    vi.mocked(auth).mockResolvedValue({ user: { id: "user_1" } } as never);
+    mockAuth.mockResolvedValue({ user: { id: "user_1" } });
   });
 
   it("GET passes userId and parsed query to listExpenses", async () => {

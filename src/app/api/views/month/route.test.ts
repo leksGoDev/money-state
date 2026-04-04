@@ -15,6 +15,11 @@ vi.mock("@/modules/views", () => ({
 }));
 
 import { auth } from "@/auth";
+
+type MockAuthSession = { user?: { id?: string } } | null;
+const mockAuth = vi.mocked(
+  auth as unknown as () => Promise<MockAuthSession>,
+);
 import * as route from "@/app/api/views/month/route";
 import { getMonthView } from "@/modules/views";
 
@@ -25,7 +30,7 @@ type MonthViewResult = Awaited<ReturnType<typeof getMonthView>>;
 describe("/api/views/month route", () => {
   beforeEach(() => {
     vi.resetAllMocks();
-    vi.mocked(auth).mockResolvedValue({ user: { id: "user_1" } } as never);
+    mockAuth.mockResolvedValue({ user: { id: "user_1" } });
   });
 
   it("passes parsed query object to month view use-case", async () => {
