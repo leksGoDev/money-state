@@ -8,6 +8,10 @@ export default defineConfig({
     },
   },
   test: {
-    include: ["src/**/*.test.ts"],
+    environment: "node",
+    include: ["src/**/*.test.ts", "src/**/*.test.tsx"],
+    exclude: ["node_modules", ".next", "dist"],
+    restoreMocks: true,
+    clearMocks: true,
   },
 });

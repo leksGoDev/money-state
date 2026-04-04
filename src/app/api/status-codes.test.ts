@@ -1,7 +1,7 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
 vi.mock("@/lib/auth/session", () => ({
-  requireRequestUserId: vi.fn(() => "user_1"),
+  requireRequestUserId: vi.fn(async () => "user_1"),
 }));
 
 vi.mock("@/modules/confirmed/expense", () => ({
@@ -36,7 +36,7 @@ type CreateRequest = Parameters<typeof expensesRoute.POST>[0];
 describe("api status code contracts", () => {
   beforeEach(() => {
     vi.resetAllMocks();
-    mockRequireRequestUserId.mockReturnValue("user_1");
+    mockRequireRequestUserId.mockResolvedValue("user_1");
     mockCreateExpense.mockResolvedValue({ id: "exp_1" } as unknown as CreateExpenseResult);
     mockCreateCategory.mockResolvedValue({ id: "cat_1" } as unknown as CreateCategoryResult);
     mockCreateObligation.mockResolvedValue(

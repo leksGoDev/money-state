@@ -6,7 +6,10 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint . --cache --cache-location .eslintcache --max-warnings=0",
+    "lint:fix": "eslint . --cache --cache-location .eslintcache --fix",
+    "check": "npm run lint && npm run typecheck && npm run test",
     "test": "vitest run",
     "test:watch": "vitest",
     "db:up": "docker compose up -d postgres",
@@ -14,7 +17,8 @@
     "db:reset": "docker compose down -v",
     "prisma:generate": "prisma generate",
     "prisma:migrate:dev": "prisma migrate dev",
-    "db:bootstrap": "npm run prisma:generate && npm run prisma:migrate:dev -- --name init"
+    "prisma:migrate:deploy": "prisma migrate deploy",
+    "db:bootstrap": "npm run prisma:generate && npm run prisma:migrate:deploy"
   },
   "dependencies": {
     "@prisma/client": "^6.7.0",
@@ -33,6 +37,8 @@
     "@types/react": "^19.0.2",
     "@types/react-dom": "^19.0.2",
     "autoprefixer": "^10.4.20",
+    "eslint": "^8.57.1",
+    "eslint-config-next": "^15.5.14",
     "postcss": "^8.4.49",
     "prisma": "^6.7.0",
     "tailwindcss": "^3.4.17",
