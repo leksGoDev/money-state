@@ -8,6 +8,12 @@ vi.mock("@/modules/categories", () => ({
   updateCategory: vi.fn(),
 }));
 
+import { auth } from "@/auth";
+
+type MockAuthSession = { user?: { id?: string } } | null;
+const mockAuth = vi.mocked(
+  auth as unknown as () => Promise<MockAuthSession>,
+);
 import * as route from "@/app/api/categories/[id]/route";
 import {
   deleteCategory,
@@ -30,7 +36,10 @@ const context: CategoryItemContext = {
 };
 
 describe("/api/categories/[id] route", () => {
-  beforeEach(() => vi.resetAllMocks());
+  beforeEach(() => {
+    vi.resetAllMocks();
+    mockAuth.mockResolvedValue({ user: { id: "user_1" } });
+  });
 
   it("GET wires userId and id", async () => {
     mockGetCategoryById.mockResolvedValue({ id: "cat_1" } as unknown as GetCategoryResult);

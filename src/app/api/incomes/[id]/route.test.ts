@@ -15,6 +15,12 @@ vi.mock("@/modules/confirmed/income", () => ({
   updateIncome: vi.fn(),
 }));
 
+import { auth } from "@/auth";
+
+type MockAuthSession = { user?: { id?: string } } | null;
+const mockAuth = vi.mocked(
+  auth as unknown as () => Promise<MockAuthSession>,
+);
 import * as route from "@/app/api/incomes/[id]/route";
 import { deleteIncome, getIncomeById, updateIncome } from "@/modules/confirmed/income";
 
@@ -34,6 +40,7 @@ const context: IncomeItemContext = {
 describe("/api/incomes/[id] route", () => {
   beforeEach(() => {
     vi.resetAllMocks();
+    mockAuth.mockResolvedValue({ user: { id: "user_1" } });
   });
 
   it("GET wires userId and id to getIncomeById", async () => {

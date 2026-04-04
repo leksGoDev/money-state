@@ -8,6 +8,12 @@ vi.mock("@/modules/confirmed/expense", () => ({
   updateExpense: vi.fn(),
 }));
 
+import { auth } from "@/auth";
+
+type MockAuthSession = { user?: { id?: string } } | null;
+const mockAuth = vi.mocked(
+  auth as unknown as () => Promise<MockAuthSession>,
+);
 import * as route from "@/app/api/expenses/[id]/route";
 import { deleteExpense, getExpenseById, updateExpense } from "@/modules/confirmed/expense";
 
@@ -26,6 +32,7 @@ const context: ExpenseItemContext = { params: Promise.resolve({ id: "exp_1" }) }
 describe("/api/expenses/[id] route", () => {
   beforeEach(() => {
     vi.resetAllMocks();
+    mockAuth.mockResolvedValue({ user: { id: "user_1" } });
   });
 
   it("GET wires userId and id", async () => {

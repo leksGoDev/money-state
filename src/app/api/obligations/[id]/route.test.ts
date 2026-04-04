@@ -8,6 +8,12 @@ vi.mock("@/modules/obligations", () => ({
   updateObligation: vi.fn(),
 }));
 
+import { auth } from "@/auth";
+
+type MockAuthSession = { user?: { id?: string } } | null;
+const mockAuth = vi.mocked(
+  auth as unknown as () => Promise<MockAuthSession>,
+);
 import * as route from "@/app/api/obligations/[id]/route";
 import {
   deleteObligation,
@@ -30,7 +36,10 @@ const context: ObligationItemContext = {
 };
 
 describe("/api/obligations/[id] route", () => {
-  beforeEach(() => vi.resetAllMocks());
+  beforeEach(() => {
+    vi.resetAllMocks();
+    mockAuth.mockResolvedValue({ user: { id: "user_1" } });
+  });
 
   it("GET wires userId and id", async () => {
     mockGetObligationById.mockResolvedValue(

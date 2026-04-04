@@ -7,6 +7,12 @@ vi.mock("@/modules/categories", () => ({
   listCategories: vi.fn(),
 }));
 
+import { auth } from "@/auth";
+
+type MockAuthSession = { user?: { id?: string } } | null;
+const mockAuth = vi.mocked(
+  auth as unknown as () => Promise<MockAuthSession>,
+);
 import * as route from "@/app/api/categories/route";
 import { createCategory, listCategories } from "@/modules/categories";
 
@@ -18,7 +24,10 @@ const mockCreateCategory = vi.mocked(createCategory);
 const mockListCategories = vi.mocked(listCategories);
 
 describe("/api/categories route", () => {
-  beforeEach(() => vi.resetAllMocks());
+  beforeEach(() => {
+    vi.resetAllMocks();
+    mockAuth.mockResolvedValue({ user: { id: "user_1" } });
+  });
 
   it("GET wires userId", async () => {
     mockListCategories.mockResolvedValue([{ id: "cat_1" }] as unknown as ListCategoriesResult);

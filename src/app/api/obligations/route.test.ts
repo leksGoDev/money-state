@@ -7,6 +7,12 @@ vi.mock("@/modules/obligations", () => ({
   listObligations: vi.fn(),
 }));
 
+import { auth } from "@/auth";
+
+type MockAuthSession = { user?: { id?: string } } | null;
+const mockAuth = vi.mocked(
+  auth as unknown as () => Promise<MockAuthSession>,
+);
 import * as route from "@/app/api/obligations/route";
 import {
   createObligation,
@@ -21,7 +27,10 @@ const mockCreateObligation = vi.mocked(createObligation);
 const mockListObligations = vi.mocked(listObligations);
 
 describe("/api/obligations route", () => {
-  beforeEach(() => vi.resetAllMocks());
+  beforeEach(() => {
+    vi.resetAllMocks();
+    mockAuth.mockResolvedValue({ user: { id: "user_1" } });
+  });
 
   it("GET passes userId and parsed query to listObligations", async () => {
     mockListObligations.mockResolvedValue(
