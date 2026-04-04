@@ -14,8 +14,9 @@ function getSessionUserId(session: SessionLike): string | null {
 }
 
 export async function requireRequestUserId(
-  _request: Request,
+  request: Request,
 ): Promise<string> {
+  void request;
   const session = await auth();
   const userId = getSessionUserId(session);
 

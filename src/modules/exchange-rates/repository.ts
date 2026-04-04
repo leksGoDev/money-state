@@ -1,4 +1,4 @@
-import { Currency as PrismaCurrency, type Prisma } from "@prisma/client";
+import { Currency as PrismaCurrency } from "@prisma/client";
 
 import { prisma } from "@/lib/prisma";
 

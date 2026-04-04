@@ -143,30 +143,34 @@ AI workflow notes live in [`AGENTS.md`](./AGENTS.md).
 
 ## Local PostgreSQL (Docker)
 
-1. Create local env file:
+1. Install dependencies:
+
+```bash
+npm install
+```
+
+2. Create local env file:
 
 ```bash
 cp .env.example .env
 ```
 
-2. Start PostgreSQL:
+3. Start PostgreSQL:
 
 ```bash
-colima start
 npm run db:up
 ```
 
-3. Bootstrap Prisma (generate client + apply/create local migrations):
+4. Bootstrap Prisma (generate client + apply existing migrations):
 
 ```bash
 npm run db:bootstrap
 ```
 
-If you already have migrations and do not need to create a new one:
+If you are changing Prisma schema and need a new local migration:
 
 ```bash
-npm run prisma:generate
-npm run prisma:migrate:dev
+npm run prisma:migrate:dev -- --name <migration_name>
 ```
 
 Stop local database:
@@ -180,6 +184,43 @@ Reset local database volume (destructive for local data):
 ```bash
 npm run db:reset
 ```
+
+## Quality Workflow
+
+Run lint (non-interactive ESLint CLI):
+
+```bash
+npm run lint
+```
+
+Run TypeScript typecheck:
+
+```bash
+npm run typecheck
+```
+
+Run tests:
+
+```bash
+npm test
+```
+
+Run combined local check pipeline:
+
+```bash
+npm run check
+```
+
+Build production bundle:
+
+```bash
+npm run build
+```
+
+Notes:
+
+- route/unit tests are isolated from real auth/database via mocks
+- local PostgreSQL is required for runtime development and Prisma workflows, not for default test run
 
 ## Status
 
