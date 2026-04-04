@@ -523,11 +523,7 @@ Example response shape:
   "summary": {
     "income": "60000.00",
     "expense": "31000.00",
-    "net": "29000.00",
-    "possibleReceive": "2200.00",
-    "possiblePay": "1700.00",
-    "min": "27300.00",
-    "max": "31200.00"
+    "net": "29000.00"
   },
   "months": []
 }
