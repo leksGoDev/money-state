@@ -14,6 +14,7 @@ vi.mock("@/modules/views", () => ({
   getYearView: vi.fn(),
 }));
 
+import { auth } from "@/auth";
 import * as route from "@/app/api/views/year/route";
 import { getYearView } from "@/modules/views";
 
@@ -24,6 +25,7 @@ type YearViewResult = Awaited<ReturnType<typeof getYearView>>;
 describe("/api/views/year route", () => {
   beforeEach(() => {
     vi.resetAllMocks();
+    vi.mocked(auth).mockResolvedValue({ user: { id: "user_1" } } as never);
   });
 
   it("passes parsed query object to year view use-case", async () => {

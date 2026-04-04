@@ -8,6 +8,7 @@ vi.mock("@/modules/confirmed/expense", () => ({
   updateExpense: vi.fn(),
 }));
 
+import { auth } from "@/auth";
 import * as route from "@/app/api/expenses/[id]/route";
 import { deleteExpense, getExpenseById, updateExpense } from "@/modules/confirmed/expense";
 
@@ -26,6 +27,7 @@ const context: ExpenseItemContext = { params: Promise.resolve({ id: "exp_1" }) }
 describe("/api/expenses/[id] route", () => {
   beforeEach(() => {
     vi.resetAllMocks();
+    vi.mocked(auth).mockResolvedValue({ user: { id: "user_1" } } as never);
   });
 
   it("GET wires userId and id", async () => {

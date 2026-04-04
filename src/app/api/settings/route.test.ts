@@ -7,6 +7,7 @@ vi.mock("@/modules/settings", () => ({
   updateSettings: vi.fn(),
 }));
 
+import { auth } from "@/auth";
 import * as route from "@/app/api/settings/route";
 import { getSettings, updateSettings } from "@/modules/settings";
 
@@ -18,7 +19,10 @@ const mockGetSettings = vi.mocked(getSettings);
 const mockUpdateSettings = vi.mocked(updateSettings);
 
 describe("/api/settings route", () => {
-  beforeEach(() => vi.resetAllMocks());
+  beforeEach(() => {
+    vi.resetAllMocks();
+    vi.mocked(auth).mockResolvedValue({ user: { id: "user_1" } } as never);
+  });
 
   it("GET returns settings for request user", async () => {
     mockGetSettings.mockResolvedValue(

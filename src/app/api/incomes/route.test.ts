@@ -14,6 +14,7 @@ vi.mock("@/modules/confirmed/income", () => ({
   listIncomes: vi.fn(),
 }));
 
+import { auth } from "@/auth";
 import * as route from "@/app/api/incomes/route";
 import { createIncome, listIncomes } from "@/modules/confirmed/income";
 
@@ -26,6 +27,7 @@ type CreateIncomeResult = Awaited<ReturnType<typeof createIncome>>;
 describe("/api/incomes route", () => {
   beforeEach(() => {
     vi.resetAllMocks();
+    vi.mocked(auth).mockResolvedValue({ user: { id: "user_1" } } as never);
   });
 
   it("GET passes userId and parsed query to listIncomes", async () => {

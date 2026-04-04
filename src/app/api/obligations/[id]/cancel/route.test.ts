@@ -14,6 +14,7 @@ vi.mock("@/modules/obligations", () => ({
   cancelObligation: vi.fn(),
 }));
 
+import { auth } from "@/auth";
 import * as route from "@/app/api/obligations/[id]/cancel/route";
 import { cancelObligation } from "@/modules/obligations";
 
@@ -29,6 +30,7 @@ const context: CancelContext = {
 describe("/api/obligations/[id]/cancel route", () => {
   beforeEach(() => {
     vi.resetAllMocks();
+    vi.mocked(auth).mockResolvedValue({ user: { id: "user_1" } } as never);
   });
 
   it("wires userId, id and payload to cancelObligation", async () => {

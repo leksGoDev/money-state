@@ -14,6 +14,7 @@ vi.mock("@/modules/obligations", () => ({
   resolveObligation: vi.fn(),
 }));
 
+import { auth } from "@/auth";
 import * as route from "@/app/api/obligations/[id]/resolve/route";
 import { resolveObligation } from "@/modules/obligations";
 
@@ -29,6 +30,7 @@ const context: ResolveContext = {
 describe("/api/obligations/[id]/resolve route", () => {
   beforeEach(() => {
     vi.resetAllMocks();
+    vi.mocked(auth).mockResolvedValue({ user: { id: "user_1" } } as never);
   });
 
   it("wires userId, id and payload to resolveObligation", async () => {

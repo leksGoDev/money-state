@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { signIn } from "next-auth/react";
 
 import { registerViaApi } from "@/modules/auth/requests";
 
@@ -15,11 +16,25 @@ export function RegisterForm() {
     setError(null);
 
     try {
+      const email = String(formData.get("email") ?? "");
+      const password = String(formData.get("password") ?? "");
+
       await registerViaApi({
-        email: formData.get("email"),
-        password: formData.get("password"),
+        email,
+        password,
         name: formData.get("name"),
       });
+
+      const signInResult = await signIn("credentials", {
+        email,
+        password,
+        redirect: false,
+      });
+
+      if (signInResult?.error) {
+        throw new Error("Account created, but automatic sign-in failed.");
+      }
+
       router.refresh();
     } catch (submitError) {
       const message =

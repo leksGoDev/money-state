@@ -8,6 +8,7 @@ vi.mock("@/modules/obligations", () => ({
   updateObligation: vi.fn(),
 }));
 
+import { auth } from "@/auth";
 import * as route from "@/app/api/obligations/[id]/route";
 import {
   deleteObligation,
@@ -30,7 +31,10 @@ const context: ObligationItemContext = {
 };
 
 describe("/api/obligations/[id] route", () => {
-  beforeEach(() => vi.resetAllMocks());
+  beforeEach(() => {
+    vi.resetAllMocks();
+    vi.mocked(auth).mockResolvedValue({ user: { id: "user_1" } } as never);
+  });
 
   it("GET wires userId and id", async () => {
     mockGetObligationById.mockResolvedValue(
