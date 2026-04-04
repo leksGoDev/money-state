@@ -141,6 +141,46 @@ Project docs live in [`docs/`](./docs):
 
 AI workflow notes live in [`AGENTS.md`](./AGENTS.md).
 
+## Local PostgreSQL (Docker)
+
+1. Create local env file:
+
+```bash
+cp .env.example .env
+```
+
+2. Start PostgreSQL:
+
+```bash
+colima start
+npm run db:up
+```
+
+3. Bootstrap Prisma (generate client + apply/create local migrations):
+
+```bash
+npm run db:bootstrap
+```
+
+If you already have migrations and do not need to create a new one:
+
+```bash
+npm run prisma:generate
+npm run prisma:migrate:dev
+```
+
+Stop local database:
+
+```bash
+npm run db:down
+```
+
+Reset local database volume (destructive for local data):
+
+```bash
+npm run db:reset
+```
+
 ## Status
 
 The project is currently in specification and architecture setup stage.
